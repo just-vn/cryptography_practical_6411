@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void encrypt(char text[], char key[])
+{
+    int i, j = 0;
+    int keyLen = strlen(key);
+
+    for (i = 0; text[i] != '\0'; i++)
+    {
+        if (isalpha(text[i]))
+        {
+            text[i] = ((toupper(text[i]) - 'A' +
+                        (toupper(key[j % keyLen]) - 'A')) % 26) + 'A';
+            j++;
+        }
+    }
+}
+
+void decrypt(char text[], char key[])
+{
+    int i, j = 0;
+    int keyLen = strlen(key);
+
+    for (i = 0; text[i] != '\0'; i++)
+    {
+        if (isalpha(text[i]))
+        {
+            text[i] = ((toupper(text[i]) - 'A' -
+                        (toupper(key[j % keyLen]) - 'A') + 26) % 26) + 'A';
+            j++;
+        }
+    }
+}
+
+int main()
+{
+    char text[100];
+    char key[100];
+
+    printf("Enter the plaintext: ");
+    fgets(text, sizeof(text), stdin);
+
+    printf("Enter the key: ");
+    scanf("%s", key);
+
+    /* Encryption */
+    encrypt(text, key);
+    printf("\nEncrypted text: %s", text);
+
+    /* Decryption */
+    decrypt(text, key);
+    printf("Decrypted text: %s", text);
+
+    return 0;
+}
+
+Enter the plaintext: HELLO WORLD
+Enter the key: KEY
+
+Encrypted text: RIJVS GSPVJ
+Decrypted text: HELLO WORLD
