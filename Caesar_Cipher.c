@@ -1,55 +1,44 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+def encrypt(text, shift):
+    result = ""
 
-void encrypt(char text[], int shift)
-{
-    int i;
-    for (i = 0; text[i] != '\0'; i++)
-    {
-        if (isupper(text[i]))
-            text[i] = (text[i] - 'A' + shift) % 26 + 'A';
-        else if (islower(text[i]))
-            text[i] = (text[i] - 'a' + shift) % 26 + 'a';
-    }
-}
+    for ch in text:
+        if ch.isupper():
+            result += chr((ord(ch) - ord('A') + shift) % 26 + ord('A'))
+        elif ch.islower():
+            result += chr((ord(ch) - ord('a') + shift) % 26 + ord('a'))
+        else:
+            result += ch
 
-void decrypt(char text[], int shift)
-{
-    int i;
-    for (i = 0; text[i] != '\0'; i++)
-    {
-        if (isupper(text[i]))
-            text[i] = (text[i] - 'A' - shift + 26) % 26 + 'A';
-        else if (islower(text[i]))
-            text[i] = (text[i] - 'a' - shift + 26) % 26 + 'a';
-    }
-}
+    return result
 
-int main()
-{
-    char text[100];
-    int shift;
 
-    printf("Enter the message: ");
-    fgets(text, sizeof(text), stdin);
+def decrypt(text, shift):
+    result = ""
 
-    printf("Enter the key (shift): ");
-    scanf("%d", &shift);
+    for ch in text:
+        if ch.isupper():
+            result += chr((ord(ch) - ord('A') - shift) % 26 + ord('A'))
+        elif ch.islower():
+            result += chr((ord(ch) - ord('a') - shift) % 26 + ord('a'))
+        else:
+            result += ch
 
-    shift = shift % 26;
+    return result
 
-    encrypt(text, shift);
-    printf("\nEncrypted message: %s", text);
 
-    decrypt(text, shift);
-    printf("Decrypted message: %s", text);
+text = input()
+shift = int(input())
 
-    return 0;
-}
+shift = shift % 26
 
-Enter the message: Hello World
-Enter the key (shift): 3
+encrypted = encrypt(text, shift)
+print("Encrypted message:", encrypted)
+
+decrypted = decrypt(encrypted, shift)
+print("Decrypted message:", decrypted)
+
+Hello World
+3
 
 Encrypted message: Khoor Zruog
 Decrypted message: Hello World
