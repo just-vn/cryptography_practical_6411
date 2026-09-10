@@ -1,67 +1,41 @@
-#include <stdio.h>
-#include <string.h>
+def encrypt(text, key, n):
+    temp = ""
 
-void encrypt(char text[], int key[], int n)
-{
-    char temp[100];
-    int i, j, k = 0, len = strlen(text);
+    for i in range(n):
+        for j in range(0, len(text), n):
+            if j + key[i] < len(text):
+                temp += text[j + key[i]]
 
-    for(i = 0; i < n; i++)
-        for(j = 0; j < len; j += n)
-            if(j + key[i] < len)
-                temp[k++] = text[j + key[i]];
+    return temp
 
-    temp[k] = '\0';
-    strcpy(text, temp);
-}
 
-void decrypt(char text[], int key[], int n)
-{
-    char temp[100];
-    int i, j, k = 0, len = strlen(text);
+def decrypt(text, key, n):
+    temp = [""] * len(text)
+    k = 0
 
-    for(i = 0; i < n; i++)
-        for(j = 0; j < len; j += n)
-            if(j + key[i] < len)
-                temp[j + key[i]] = text[k++];
+    for i in range(n):
+        for j in range(0, len(text), n):
+            if j + key[i] < len(text):
+                temp[j + key[i]] = text[k]
+                k += 1
 
-    temp[len] = '\0';
-    strcpy(text, temp);
-}
+    return "".join(temp)
 
-int main()
-{
-    char text[100];
-    int key[10], n, i;
 
-    printf("Enter message: ");
-    scanf("%s", text);
+text = input()
+n = int(input())
 
-    printf("Enter number of columns: ");
-    scanf("%d", &n);
+key = list(map(int, input().split()))
 
-    printf("Enter column order: ");
-    for(i = 0; i < n; i++)
-        scanf("%d", &key[i]);
+text = encrypt(text, key, n)
+text = encrypt(text, key, n)
 
-    /* First transposition */
-    encrypt(text, key, n);
+print("Encrypted:", text)
 
-    /* Second transposition */
-    encrypt(text, key, n);
+text = decrypt(text, key, n)
+text = decrypt(text, key, n)
 
-    printf("Encrypted: %s\n", text);
-
-    /* Reverse second transposition */
-    decrypt(text, key, n);
-
-    /* Reverse first transposition */
-    decrypt(text, key, n);
-
-    printf("Decrypted: %s\n", text);
-
-    return 0;
-}
+print("Decrypted:", text)
 
 Enter message: HELLOWORLD
 Enter number of columns: 5
