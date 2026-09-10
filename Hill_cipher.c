@@ -1,139 +1,66 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+def mod_inverse(a):
+    for i in range(1, 26):
+        if (a * i) % 26 == 1:
+            return i
+    return -1
 
-int modInverse(int a)
-{
-    int i;
-    for (i = 1; i < 26; i++)
-    {
-        if ((a * i) % 26 == 1)
-            return i;
-    }
-    return -1;
-}
 
-int main()
-{
-    char text[100];
-    int key[2][2];
-    int invKey[2][2];
-    int i, j, k;
-    int len;
-    int det, invDet;
+text = input()
 
-    printf("Enter the plaintext: ");
-    fgets(text, sizeof(text), stdin);
+key = []
+for i in range(2):
+    key.append(list(map(int, input().split())))
 
-    /* Remove newline */
-    text[strcspn(text, "\n")] = '\0';
+det = key[0][0] * key[1][1] - key[0][1] * key[1][0]
+det = det % 26
 
-    printf("Enter the 2x2 key matrix:\n");
-    for (i = 0; i < 2; i++)
-    {
-        for (j = 0; j < 2; j++)
-        {
-            scanf("%d", &key[i][j]);
-        }
-    }
+inv_det = mod_inverse(det)
 
-    /* Calculate determinant */
-    det = key[0][0] * key[1][1] - key[0][1] * key[1][0];
-    det = (det % 26 + 26) % 26;
+if inv_det == -1:
+    print("Invalid key matrix! Decryption is not possible.")
+else:
+    clean = ""
 
-    invDet = modInverse(det);
+    for ch in text:
+        if ch.isalpha():
+            clean += ch.upper()
 
-    if (invDet == -1)
-    {
-        printf("Invalid key matrix! Decryption is not possible.\n");
-        return 0;
-    }
+    if len(clean) % 2 != 0:
+        clean += "X"
 
-    /* Encryption */
-    len = strlen(text);
+    encrypted = ""
 
-    /* Convert to uppercase and remove spaces */
-    char clean[100];
-    int n = 0;
+    for i in range(0, len(clean), 2):
+        x = ord(clean[i]) - ord('A')
+        y = ord(clean[i + 1]) - ord('A')
 
-    for (i = 0; i < len; i++)
-    {
-        if (isalpha(text[i]))
-        {
-            clean[n++] = toupper(text[i]);
-        }
-    }
+        a = (key[0][0] * x + key[0][1] * y) % 26
+        b = (key[1][0] * x + key[1][1] * y) % 26
 
-    clean[n] = '\0';
+        encrypted += chr(a + ord('A'))
+        encrypted += chr(b + ord('A'))
 
-    /* Add X if length is odd */
-    if (n % 2 != 0)
-    {
-        clean[n++] = 'X';
-        clean[n] = '\0';
-    }
+    print("Encrypted text:", encrypted)
 
-    char encrypted[100];
+    inv_key = [
+        [(key[1][1] * inv_det) % 26, (-key[0][1] * inv_det) % 26],
+        [(-key[1][0] * inv_det) % 26, (key[0][0] * inv_det) % 26]
+    ]
 
-    for (i = 0; i < n; i += 2)
-    {
-        int x = clean[i] - 'A';
-        int y = clean[i + 1] - 'A';
+    decrypted = ""
 
-        encrypted[i] =
-            (key[0][0] * x + key[0][1] * y) % 26 + 'A';
+    for i in range(0, len(encrypted), 2):
+        x = ord(encrypted[i]) - ord('A')
+        y = ord(encrypted[i + 1]) - ord('A')
 
-        encrypted[i + 1] =
-            (key[1][0] * x + key[1][1] * y) % 26 + 'A';
-    }
+        a = (inv_key[0][0] * x + inv_key[0][1] * y) % 26
+        b = (inv_key[1][0] * x + inv_key[1][1] * y) % 26
 
-    encrypted[n] = '\0';
+        decrypted += chr(a + ord('A'))
+        decrypted += chr(b + ord('A'))
 
-    printf("\nEncrypted text: %s\n", encrypted);
-
-    /* Find inverse key matrix
-       Inverse of [a b]
-                  [c d]
-       = invDet * [ d -b]
-                   [-c  a]
-    */
-
-    invKey[0][0] = (key[1][1] * invDet) % 26;
-    invKey[0][1] = (-key[0][1] * invDet) % 26;
-    invKey[1][0] = (-key[1][0] * invDet) % 26;
-    invKey[1][1] = (key[0][0] * invDet) % 26;
-
-    /* Make values positive */
-    for (i = 0; i < 2; i++)
-    {
-        for (j = 0; j < 2; j++)
-        {
-            invKey[i][j] = (invKey[i][j] + 26) % 26;
-        }
-    }
-
-    /* Decryption */
-    char decrypted[100];
-
-    for (i = 0; i < n; i += 2)
-    {
-        int x = encrypted[i] - 'A';
-        int y = encrypted[i + 1] - 'A';
-
-        decrypted[i] =
-            (invKey[0][0] * x + invKey[0][1] * y) % 26 + 'A';
-
-        decrypted[i + 1] =
-            (invKey[1][0] * x + invKey[1][1] * y) % 26 + 'A';
-    }
-
-    decrypted[n] = '\0';
-
-    printf("Decrypted text: %s\n", decrypted);
-
-    return 0;
-}
-
+    print("Decrypted text:", decrypted)
+    
 Enter the plaintext: HELP
 Enter the 2x2 key matrix:
 3 3
