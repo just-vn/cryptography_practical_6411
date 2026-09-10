@@ -1,60 +1,41 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+def encrypt(text, key):
+    result = ""
+    j = 0
 
-void encrypt(char text[], char key[])
-{
-    int i, j = 0;
-    int keyLen = strlen(key);
+    for ch in text:
+        if ch.isalpha():
+            result += chr((ord(ch.upper()) - 65 +
+                           ord(key[j % len(key)].upper()) - 65) % 26 + 65)
+            j += 1
+        else:
+            result += ch
 
-    for (i = 0; text[i] != '\0'; i++)
-    {
-        if (isalpha(text[i]))
-        {
-            text[i] = ((toupper(text[i]) - 'A' +
-                        (toupper(key[j % keyLen]) - 'A')) % 26) + 'A';
-            j++;
-        }
-    }
-}
+    return result
 
-void decrypt(char text[], char key[])
-{
-    int i, j = 0;
-    int keyLen = strlen(key);
 
-    for (i = 0; text[i] != '\0'; i++)
-    {
-        if (isalpha(text[i]))
-        {
-            text[i] = ((toupper(text[i]) - 'A' -
-                        (toupper(key[j % keyLen]) - 'A') + 26) % 26) + 'A';
-            j++;
-        }
-    }
-}
+def decrypt(text, key):
+    result = ""
+    j = 0
 
-int main()
-{
-    char text[100];
-    char key[100];
+    for ch in text:
+        if ch.isalpha():
+            result += chr((ord(ch) - 65 -
+                           ord(key[j % len(key)].upper()) + 65) % 26 + 65)
+            j += 1
+        else:
+            result += ch
 
-    printf("Enter the plaintext: ");
-    fgets(text, sizeof(text), stdin);
+    return result
 
-    printf("Enter the key: ");
-    scanf("%s", key);
 
-    /* Encryption */
-    encrypt(text, key);
-    printf("\nEncrypted text: %s", text);
+text = input()
+key = input()
 
-    /* Decryption */
-    decrypt(text, key);
-    printf("Decrypted text: %s", text);
+encrypted = encrypt(text, key)
+print("Encrypted text:", encrypted)
 
-    return 0;
-}
+decrypted = decrypt(encrypted, key)
+print("Decrypted text:", decrypted)
 
 Enter the plaintext: HELLO WORLD
 Enter the key: KEY
