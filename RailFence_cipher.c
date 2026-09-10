@@ -1,69 +1,66 @@
-#include <stdio.h>
-#include <string.h>
+text = input()
+key = int(input())
 
-int main()
-{
-    char text[100], rail[10][100];
-    int key, len, i, j, row = 0, dir = 1, k = 0;
+rail = [[""] * len(text) for _ in range(key)]
 
-    printf("Enter the text: ");
-    scanf("%s", text);
+row = 0
+direction = 1
 
-    printf("Enter number of rails: ");
-    scanf("%d", &key);
+for i in range(len(text)):
+    rail[row][i] = text[i]
 
-    len = strlen(text);
+    if row == key - 1:
+        direction = -1
+    elif row == 0:
+        direction = 1
 
-    /* Encryption */
-    for(i = 0; i < key; i++)
-        for(j = 0; j < len; j++)
-            rail[i][j] = '\0';
+    row += direction
 
-    row = 0;
-    for(i = 0; i < len; i++)
-    {
-        rail[row][i] = text[i];
-        if(row == key-1) dir = -1;
-        if(row == 0) dir = 1;
-        row += dir;
-    }
+encrypted = ""
 
-    printf("Encrypted: ");
-    for(i = 0; i < key; i++)
-        for(j = 0; j < len; j++)
-            if(rail[i][j])
-                printf("%c", rail[i][j]);
+for i in range(key):
+    for j in range(len(text)):
+        if rail[i][j]:
+            encrypted += rail[i][j]
 
-    /* Decryption */
-    row = 0; dir = 1;
+print("Encrypted:", encrypted)
 
-    for(i = 0; i < len; i++)
-    {
-        rail[row][i] = '*';
-        if(row == key-1) dir = -1;
-        if(row == 0) dir = 1;
-        row += dir;
-    }
+row = 0
+direction = 1
 
-    k = 0;
-    for(i = 0; i < key; i++)
-        for(j = 0; j < len; j++)
-            if(rail[i][j] == '*' )
-                rail[i][j] = text[k++];
+for i in range(len(text)):
+    rail[row][i] = "*"
 
-    printf("\nDecrypted: ");
-    row = 0; dir = 1;
+    if row == key - 1:
+        direction = -1
+    elif row == 0:
+        direction = 1
 
-    for(i = 0; i < len; i++)
-    {
-        printf("%c", rail[row][i]);
-        if(row == key-1) dir = -1;
-        if(row == 0) dir = 1;
-        row += dir;
-    }
+    row += direction
 
-    return 0;
-}
+k = 0
+
+for i in range(key):
+    for j in range(len(text)):
+        if rail[i][j] == "*":
+            rail[i][j] = encrypted[k]
+            k += 1
+
+decrypted = ""
+row = 0
+direction = 1
+
+for i in range(len(text)):
+    decrypted += rail[row][i]
+
+    if row == key - 1:
+        direction = -1
+    elif row == 0:
+        direction = 1
+
+    row += direction
+
+print("Decrypted:", decrypted)
 
 Enter the text: HELLOWORLD
 Enter number of rails: 3
