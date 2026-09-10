@@ -1,68 +1,29 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+key = input().upper()
+text = input()
 
-int main()
-{
-    char plaintext[100], ciphertext[100];
-    char key[27] = "QWERTYUIOPASDFGHJKLZXCVBNM";
-    int i;
+encrypted = ""
 
-    printf("Enter the plaintext: ");
-    fgets(plaintext, sizeof(plaintext), stdin);
+for ch in text:
+    if ch.isupper():
+        encrypted += key[ord(ch) - ord('A')]
+    elif ch.islower():
+        encrypted += key[ord(ch) - ord('a')].lower()
+    else:
+        encrypted += ch
 
-    /* Encryption */
-    for (i = 0; plaintext[i] != '\0'; i++)
-    {
-        if (isupper(plaintext[i]))
-            ciphertext[i] = key[plaintext[i] - 'A'];
-        else if (islower(plaintext[i]))
-            ciphertext[i] = tolower(key[plaintext[i] - 'a']);
-        else
-            ciphertext[i] = plaintext[i];
-    }
+print("Encrypted text:", encrypted)
 
-    ciphertext[i] = '\0';
+decrypted = ""
 
-    printf("\nEncrypted text: %s", ciphertext);
+for ch in encrypted:
+    if ch.isupper():
+        decrypted += chr(key.index(ch) + ord('A'))
+    elif ch.islower():
+        decrypted += chr(key.lower().index(ch) + ord('a'))
+    else:
+        decrypted += ch
 
-    /* Decryption */
-    for (i = 0; ciphertext[i] != '\0'; i++)
-    {
-        if (isupper(ciphertext[i]))
-        {
-            int j;
-            for (j = 0; j < 26; j++)
-            {
-                if (key[j] == ciphertext[i])
-                {
-                    plaintext[i] = 'A' + j;
-                    break;
-                }
-            }
-        }
-        else if (islower(ciphertext[i]))
-        {
-            int j;
-            for (j = 0; j < 26; j++)
-            {
-                if (tolower(key[j]) == ciphertext[i])
-                {
-                    plaintext[i] = 'a' + j;
-                    break;
-                }
-            }
-        }
-        else
-            plaintext[i] = ciphertext[i];
-    }
-
-    plaintext[i] = '\0';
-
-    printf("Decrypted text: %s", plaintext);
-
-    return 0;
-}
+print("Decrypted text:", decrypted)
 
 Enter the plaintext: HELLO WORLD
 
